@@ -2,7 +2,6 @@
 
 pragma solidity >=0.7.0 <0.8.0;
 
-import * as bridgeUSDT from "./IBEP40.sol";
 import "./Fund.sol";
 
 contract FundPlatform is BEP20Mintable, BEP20Burnable {
@@ -107,6 +106,19 @@ contract FundPlatform is BEP20Mintable, BEP20Burnable {
         
         bridgeUSDT.IBEP40(_assetCurrency).transferFrom(_msgSender(), _investingFund, _investAmount);
         
+        Fund(_investingFund).issueShares(_msgSender(), _investAmount.div( Fund(_investingFund).getNAV() ));
+        
         return true;
+    }
+    
+    /**
+     * @dev Function to change fund manager.
+     *
+     * NOTE: Restricting function to owner only.
+     *
+     * @param _newFundMgr The address of the new fund manager
+     */
+    function changeFundManager(string memory _fundSymbol, address payable _newFundMgr) public onlyOwner {
+        funds[_toBytes32(_fundSymbol)].changeFundManager(_newFundMgr);
     }
 }

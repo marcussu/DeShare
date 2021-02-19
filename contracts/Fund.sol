@@ -2,6 +2,7 @@
 
 pragma solidity >=0.7.0 <0.8.0;
 
+import * as bridgeUSDT from "./IBEP40.sol";
 import "./BEP20.sol";
 
 /**
@@ -169,13 +170,13 @@ contract Fund is BEP20Mintable, BEP20Burnable, ServicePayer {
     event FundTypeSet(FundType indexed oldFundType, FundType indexed newFundType);
     
     // modifier to check if caller is initiator
-    modifier isInitiator() {
+    modifier onlyFundMgrOrOwner() {
         // If the first argument of 'require' evaluates to 'false', execution terminates and all
         // changes to the state and to BNB balances are reverted.
         // This used to consume all gas in old EVM versions, but not anymore.
         // It is often a good idea to use 'require' to check if functions are called correctly.
         // As a second argument, you can also provide an explanation about what went wrong.
-        require(_msgSender() == fund_initiator, "Caller is not fund initiator");
+        require(_msgSender() == fund_manager || _msgSender() == owner(), "Caller is not fund manager or owner.");
         _;
     }
     
@@ -277,6 +278,16 @@ contract Fund is BEP20Mintable, BEP20Burnable, ServicePayer {
     }
     
     /**
+     * @dev Return fund's Net Asset Value
+     * @return the fund's Net Asset Value
+     */
+    function getNAV() external view returns (uint256) {
+        uint256 _totalAssetValue = bridgeUSDT.IBEP40(asset_base_currency).balanceOf(address(this));
+        
+        return _totalAssetValue.div(totalSupply());
+    }
+    
+    /**
      * @dev Function to issue shares once funding is received.
      *
      * NOTE: Restricting function to owner only.
@@ -292,11 +303,9 @@ contract Fund is BEP20Mintable, BEP20Burnable, ServicePayer {
     *
     * Requirements
     *
-    * - `msg.sender` must be the fund initiator or owner
+    * - `msg.sender` must be the fund manager or owner
     */
-    function stopNewInvestments() public returns (bool) {
-        require(_msgSender() == fund_initiator || _msgSender() == owner(), "Caller is not fund initiator or owner.");
-        
+    function stopNewInvestments() public onlyFundMgrOrOwner returns (bool) {
         can_invest = false;
         return true;
     }
@@ -306,11 +315,9 @@ contract Fund is BEP20Mintable, BEP20Burnable, ServicePayer {
     *
     * Requirements
     *
-    * - `msg.sender` must be the fund initiator or owner
+    * - `msg.sender` must be the fund manager or owner
     */
-    function resumeNewInvestments() public returns (bool) {
-        require(_msgSender() == fund_initiator || _msgSender() == owner(), "Caller is not fund initiator or owner.");
-        
+    function resumeNewInvestments() public onlyFundMgrOrOwner returns (bool) {
         can_invest = true;
         return true;
     }
@@ -324,5 +331,24 @@ contract Fund is BEP20Mintable, BEP20Burnable, ServicePayer {
      */
     function changeFundManager(address payable _newFundMgr) public onlyOwner {
         fund_manager = _newFundMgr;
+    }
+    
+    /**
+     * @dev Function for fund manager to use the fund assets
+     *
+     * NOTE: Restricting function to fund manager and owner only.
+     *
+     * @param _assetReceiver The receiver of the asset.
+     * @param _assetCurrency The currency of the asset to use.
+     * @param _assetCurrency The amount to be sent to receiver.
+     */
+    function useAsset(address payable _assetReceiver, address _assetCurrency, uint256 _amount) public onlyFundMgrOrOwner returns (bool) {
+        if(_assetCurrency == asset_base_currency){
+            bridgeUSDT.IBEP40(asset_base_currency).transfer(_assetReceiver, _amount);
+            
+            return true;
+        }
+        
+        return false;
     }
 }
