@@ -4,6 +4,8 @@ DeShare: Decentralized Mutual Fund Platform
 Platform based on Binance Smart Chain to enable decentralized mutual funds to be launched that are more transparent and cost-effective than traditional mutual funds. The platform will also form a "family of mutual funds" to enable participants more flexibility to switch between funds.
 
 Official site - https://fund.type.sg
+Demo videos - https://www.youtube.com/playlist?list=PLm6WgPLnPE1jAS2BczC9n8dCXN7z0R9A3
+DeShare platform smart contract address - https://testnet.bscscan.com/address/0xa70218f213ccde531b114f079554d181f18e7722
 
 ## Advantages of Mutual Funds
 * Allows diversification of portfolio.
@@ -43,9 +45,18 @@ Fund Type | Traditional Mutual Fund
 DeShare decided to adopt Binance wrapped USDT as the initial supported base currency and aims to support other stablecoins in future phases.
 
 # Development Documentation
+## Environment Setup
+* Programming languages: Solidity (v0.7.4), Javascript, HTML/CSS
+* Remix IDE - https://remix.ethereum.org/#optimize=true&runs=200&evmVersion=null&version=soljson-v0.7.4+commit.3f05b770.js&appVersion=0.8.0
+* MetaMask - https://metamask.io/
+* Frontend - Bootstrap v5.0.0
+
+## Design Considerations
 * Current version of DeShare platform is deployed on Binance Smart Chain (BSC) testnet due to rising BNB costs in mainnet.
 * DeShare platform live on BSC testnet is a working smart contract that can create a mutual fund as BEP20 tokens directly from web form (no coding required by fund initiator).
 * Smart contract is structured as a main DeShare platform (deployed as BEP20 Token for future use cases), which tracks and owns the created mutual funds' smart contract.
 * Each mutual fund will also have its own FundManager smart contract / address that can execute commands on the fund (e.g. invest the fund assets).
 * A fixed fee of 0.1 BNB is charged for starting a mutual fund, but this value is managed by a separate platform fee receiver smart contract and value is configurable without having to redeploy the platform.
+
+## To Do
 * Smart contract for the mutual fund has interface for additional investments, but user interface is currently not handled in the front-end portal.
