@@ -278,13 +278,13 @@ contract Fund is BEP20Mintable, BEP20Burnable, ServicePayer {
     }
     
     /**
-     * @dev Return fund's Net Asset Value
-     * @return the fund's Net Asset Value
+     * @dev Return fund's total asset (portfolio size)
+     * @return the fund's total asset (portfolio size)
      */
-    function getNAV() external view returns (uint256) {
+    function getPortfolioSize() external view returns (uint256) {
         uint256 _totalAssetValue = bridgeUSDT.IBEP40(asset_base_currency).balanceOf(address(this));
         
-        return _totalAssetValue.div(totalSupply());
+        return _totalAssetValue;
     }
     
     /**

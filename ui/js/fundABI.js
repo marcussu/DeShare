@@ -2,11 +2,6 @@ const fundABI=[
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "_initialAmount",
-				"type": "uint256"
-			},
-			{
 				"internalType": "string",
 				"name": "_tokenName",
 				"type": "string"
@@ -20,6 +15,26 @@ const fundABI=[
 				"internalType": "enum Fund.FundType",
 				"name": "_fundType",
 				"type": "uint8"
+			},
+			{
+				"internalType": "address",
+				"name": "_assetBaseCurrency",
+				"type": "address"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_feeReceiver",
+				"type": "address"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_fundManager",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_fundInitiator",
+				"type": "address"
 			}
 		],
 		"stateMutability": "payable",
@@ -86,6 +101,12 @@ const fundABI=[
 			}
 		],
 		"name": "InitiatorSet",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [],
+		"name": "MintFinished",
 		"type": "event"
 	},
 	{
@@ -200,6 +221,63 @@ const fundABI=[
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "burn",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "burnFrom",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "can_invest",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_newFundMgr",
+				"type": "address"
+			}
+		],
+		"name": "changeFundManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "decimals",
 		"outputs": [
@@ -234,6 +312,52 @@ const fundABI=[
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "fee_receiver",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "finishMinting",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "fund_manager",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBaseCurrency",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -289,6 +413,19 @@ const fundABI=[
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getPortfolioSize",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -315,12 +452,42 @@ const fundABI=[
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_sharesReceiver",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "issueShares",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
 				"name": "amount",
 				"type": "uint256"
 			}
 		],
 		"name": "mint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "mintingFinished",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -328,7 +495,7 @@ const fundABI=[
 				"type": "bool"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -361,6 +528,32 @@ const fundABI=[
 		"inputs": [],
 		"name": "renounceOwnership",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "resumeNewInvestments",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "stopNewInvestments",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -453,6 +646,35 @@ const fundABI=[
 		],
 		"name": "transferOwnership",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_assetReceiver",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_assetCurrency",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "useAsset",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}

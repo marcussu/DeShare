@@ -9,7 +9,7 @@ contract FundPlatform is BEP20Mintable, BEP20Burnable {
     
     mapping(bytes32 => Fund) funds; // Tracks all the funds created on the platform; Maps fund symbol to Fund instance
     mapping(address => FundManager) fundMgrs; // Tracks all the fund managers of each fund; Maps Fund contract address to FundManager instance
-    address[] public fundListing;
+    address[] private fundListing;
     address payable platformFeeReceiver;
     address public asset_base_currency;
     
@@ -61,7 +61,7 @@ contract FundPlatform is BEP20Mintable, BEP20Burnable {
         _fundInstance.issueShares(_msgSender(), _initialAmount);
         
         funds[_toBytes32(_tokenSymbol)] = _fundInstance; // Use helper function to convert the string to bytes32 mapping key
-        fundMgrs[_fundAddress] = FundManager(_fundManager); // Explicitly type convert the _feeReceiver address into FundManager instance
+        fundMgrs[_fundAddress] = FundManager(_fundManager); // Explicitly type convert the _fundManager address into FundManager instance
         
         return _fundInstance;
     }
@@ -106,7 +106,10 @@ contract FundPlatform is BEP20Mintable, BEP20Burnable {
         
         bridgeUSDT.IBEP40(_assetCurrency).transferFrom(_msgSender(), _investingFund, _investAmount);
         
-        Fund(_investingFund).issueShares(_msgSender(), _investAmount.div( Fund(_investingFund).getNAV() ));
+        Fund _investingFundInstance = Fund(_investingFund);
+        require(_investAmount.mul( _investingFundInstance.totalSupply() ) >= _investingFundInstance.getPortfolioSize(), "Invest amount is lower than NAV.");
+        
+        Fund(_investingFund).issueShares(_msgSender(), _investAmount.mul( _investingFundInstance.totalSupply() ).div( _investingFundInstance.getPortfolioSize() ));
         
         return true;
     }
@@ -120,5 +123,36 @@ contract FundPlatform is BEP20Mintable, BEP20Burnable {
      */
     function changeFundManager(string memory _fundSymbol, address payable _newFundMgr) public onlyOwner {
         funds[_toBytes32(_fundSymbol)].changeFundManager(_newFundMgr);
+    }
+    
+    /**
+     * @dev Function to transfer a mutual fund ownership. May be used for platform upgrade/migration
+     *
+     * NOTE: Restricting function to platform owner only.
+     *
+     * @param _newFundOwner The address of the new fund owner
+     */
+    function transferMutualFund(string memory _fundSymbol, address _newFundOwner) public onlyOwner {
+        funds[_toBytes32(_fundSymbol)].transferOwnership(_newFundOwner);
+    }
+    
+    /**
+     * @dev Function to import a mutual fund. May be used for platform upgrade/migration
+     *
+     * NOTE: Restricting function to platform owner only.
+     *
+     * @param _importedFundAddr The address of the imported mutual fund
+     */
+    function importMutualFund(address payable _importedFundAddr) public onlyOwner {
+        Fund _importedFund = Fund(_importedFundAddr);
+        
+        require(_importedFund.getOwner() == address(this), "Ownership of fund needs to be transferred here before import.");
+        require(funds[_toBytes32(_importedFund.symbol())] == Fund(0), "Fund symbol is in use, kindly use a unique fund symbol."); // Check if the fund symbol is already in use
+        
+        funds[_toBytes32(_importedFund.symbol())] = _importedFund;
+        
+        fundListing.push(_importedFundAddr);
+        
+        fundMgrs[_importedFundAddr] = FundManager(_importedFund.fund_manager());
     }
 }

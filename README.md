@@ -1,7 +1,9 @@
-# A-Share
-A-Share: Decentralized Mutual Fund Platform
+# DeShare
+DeShare: Decentralized Mutual Fund Platform
 
 Platform based on Binance Smart Chain to enable decentralized mutual funds to be launched that are more transparent and cost-effective than traditional mutual funds. The platform will also form a "family of mutual funds" to enable participants more flexibility to switch between funds.
+
+Official site - https://fund.type.sg
 
 ## Advantages of Mutual Funds
 * Allows diversification of portfolio.
@@ -17,13 +19,16 @@ Platform based on Binance Smart Chain to enable decentralized mutual funds to be
 * Large cash presence in portfolios (cash drag) to maintain capacity to accommodate withdrawals.
 * Other limitations such as over-complicated investment / portfolio strategy, dilution, etc.
 
-## Objectives of A-Share
-* More transparent fee structure, investment strategy (down to smart contract rules), and investment holdings.
-* Convenient way to compare funds across the platform.
+## Objectives of DeShare
+* Fast and cost-effective launch of decentralized mutual funds.
+* More transparent fee structure, investment strategy (all transactions visible on Binance Smart Chain), and investment holdings.
+* New opportunities through integration with other DeFi projects / developments.
 
-A-Share will eventually support 7 common types of mutual funds so as to cater to the fund participants' different risk appetites and investment strategy preferences.
+## Phase 1 Support
 
-## Mutual Fund Types
+### Mutual Fund Types
+DeShare has structured the fund types into 7 common types of mutual funds so as to cater to the fund participants' different risk appetites and investment strategy preferences.
+
 Fund Type | Traditional Mutual Fund
 --------- | -----------------------
 **Money Market Fund** | These funds invest in short-term fixed income securities such as government bonds, treasury bills, bankers’ acceptances, commercial paper and certificates of deposit. They are generally a safer investment, but with a lower potential return then other types of mutual funds.
@@ -33,3 +38,14 @@ Fund Type | Traditional Mutual Fund
 **Index Fund** | These funds aim to track the performance of a specific index such as the S&P/TSX Composite Index. The value of the mutual fund will go up or down as the index goes up or down.
 **Specialty Fund** | These funds focus on specialized mandates such as real estate, commodities or socially responsible investing.
 **Fund-of-Funds** | These funds invest in other funds. Similar to balanced funds, they try to make asset allocation and diversification easier for the investor. The MER for fund-of-funds tend to be higher than stand-alone mutual funds.
+
+### Mutual Fund Base Currency
+DeShare decided to adopt Binance wrapped USDT as the initial supported base currency and aims to support other stablecoins in future phases.
+
+# Development Documentation
+* Current version of DeShare platform is deployed on Binance Smart Chain (BSC) testnet due to rising BNB costs in mainnet.
+* DeShare platform live on BSC testnet is a working smart contract that can create a mutual fund as BEP20 tokens directly from web form (no coding required by fund initiator).
+* Smart contract is structured as a main DeShare platform (deployed as BEP20 Token for future use cases), which tracks and owns the created mutual funds' smart contract.
+* Each mutual fund will also have its own FundManager smart contract / address that can execute commands on the fund (e.g. invest the fund assets).
+* A fixed fee of 0.1 BNB is charged for starting a mutual fund, but this value is managed by a separate platform fee receiver smart contract and value is configurable without having to redeploy the platform.
+* Smart contract for the mutual has interface for additional investments, but user interface is currently not handled in the front-end portal.
