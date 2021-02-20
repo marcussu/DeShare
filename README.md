@@ -48,4 +48,4 @@ DeShare decided to adopt Binance wrapped USDT as the initial supported base curr
 * Smart contract is structured as a main DeShare platform (deployed as BEP20 Token for future use cases), which tracks and owns the created mutual funds' smart contract.
 * Each mutual fund will also have its own FundManager smart contract / address that can execute commands on the fund (e.g. invest the fund assets).
 * A fixed fee of 0.1 BNB is charged for starting a mutual fund, but this value is managed by a separate platform fee receiver smart contract and value is configurable without having to redeploy the platform.
-* Smart contract for the mutual has interface for additional investments, but user interface is currently not handled in the front-end portal.
+* Smart contract for the mutual fund has interface for additional investments, but user interface is currently not handled in the front-end portal.
